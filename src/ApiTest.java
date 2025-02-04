@@ -1,3 +1,4 @@
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -13,21 +14,26 @@ public class ApiTest {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.weatherxu.com/v1/weather?" +
                         "api_key=931b36626699d66bae868e85c0fe21cd" +
-                        "&lat=40.7128&lon=-74.0060" +
-                        "&parts=currently"))
+                        "&lat=48.343084&lon=33.497936" +
+                        "&parts=daily"))
                 .build();
         try {
             HttpResponse response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JSONObject object = new JSONObject(response.body().toString());
-//            System.out.println(object.toString(1));
+//          System.out.println(object.toString(1));
             JSONObject data = object.getJSONObject("data");
-            JSONObject currently = data.getJSONObject("currently");
-            System.out.println("Current temperature is " + currently.getFloat("temperature") + " degrees");
-            System.out.println("Current pressure is " + currently.getFloat("pressure" ));
+            JSONObject daily = data.getJSONObject("daily");
+            JSONArray dailyData = daily.getJSONArray("data");
+//            System.out.println(dailyData.toString(1) );
+            for (int i = 0; i < dailyData.length(); i++) {
+                System.out.println(dailyData.getJSONObject(i).getFloat("windGustAvg"));
+
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
     }
 }
